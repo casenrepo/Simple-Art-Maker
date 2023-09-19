@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artist Tutorial</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: lightblue;
+      /* Set the background color of the entire page */
+    }
+
+    #container {
+      text-align: center;
+      background-color: white;
+      /* Set the background color inside the canvas border */
+      padding: 20px;
+      /* Add some padding to separate canvas from the border */
+    }
+
+    #drawingCanvas {
+      border: 2px solid black;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container">
+    <h1>Art Making Template</h1>
+    <div>
+      <label for="colorPicker">Select a color:</label>
+      <input type="color" id="colorPicker">
+    </div>
+    <div>
+      <label for="penSize">Pen Size:</label>
+      <input type="number" id="penSize" min="1" value="5">
+    </div>
+    <div class="button-container">
+      <button id="clearCanvas">Clear Canvas</button>
+    </div>
+    <canvas id="drawingCanvas" width="400" height="400"></canvas>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('drawingCanvas');
+    const context = canvas.getContext('2d');
+    const colorPicker = document.getElementById('colorPicker');
+    const penSizeInput = document.getElementById('penSize');
+    const clearCanvasButton = document.getElementById('clearCanvas');
+
+    let isDrawing = false;
+    let lastX = 0;
+    let lastY = 0;
+    let currentColor = colorPicker.value;
+    let currentPenSize = parseInt(penSizeInput.value);
+
+    context.strokeStyle = currentColor;
+    context.lineWidth = currentPenSize;
+
+    canvas.addEventListener('mousedown', (e) => {
+      isDrawing = true;
+      [lastX, lastY] = [e.offsetX, e.offsetY];
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (!isDrawing) return;
+      context.beginPath();
+      context.moveTo(lastX, lastY);
+      context.lineTo(e.offsetX, e.offsetY);
+      context.stroke();
+      [lastX, lastY] = [e.offsetX, e.offsetY];
+    });
+
+    canvas.addEventListener('mouseup', () => isDrawing = false);
+    canvas.addEventListener('mouseout', () => isDrawing = false);
+
+    colorPicker.addEventListener('change', (e) => {
+      currentColor = e.target.value;
+      context.strokeStyle = currentColor;
+    });
+
+    penSizeInput.addEventListener('change', (e) => {
+      currentPenSize = parseInt(e.target.value);
+      context.lineWidth = currentPenSize;
+    });
+    clearCanvasButton.addEventListener('click', () => {
+      context.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+    });
+  </script>
+</body>
+
+</html>
